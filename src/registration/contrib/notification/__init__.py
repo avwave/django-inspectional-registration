@@ -1,28 +1,28 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 """
-Send notification emails to admins, managers or particular recipients 
+Send notification emails to admins, managers or particular recipients
 when new user has registered in the site
 
 admins or managers are determined from ``ADMINS`` and ``MANAGERS`` attribute of
 ``settings.py``
 
-You can disable this notification feature by setting ``False`` to 
+You can disable this notification feature by setting ``False`` to
 ``REGISTRATION_NOTIFICATION``.
 You can disable sending emails to admins by setting ``False`` to
 ``REGISTRATION_NOTIFICATION_ADMINS``.
 You can disable sending emails to managers by settings ``False`` to
 ``REGISTRATION_NOTIFICATION_MANAGERS``.
 
-If you need extra recipients for the notification email, set a list of email 
-addresses or a function which return a list to 
+If you need extra recipients for the notification email, set a list of email
+addresses or a function which return a list to
 ``REGISTRATION_NOTIFICATION_RECIPIENTS``
 
 The notification email use the following templates in default
 
 ``registration/notification_email.txt``
     Used for email body, the following context will be passed
-    
+
     ``site``
         A instance of ``django.contrib.sites.models.Site`` or
         ``django.contrib.sites.models.RequestSite``
@@ -35,7 +35,7 @@ The notification email use the following templates in default
 
 ``registration/notification_email_subject.txt``
     Used for email subject, the following context will be passed
-    
+
     ``site``
         A instance of ``django.contrib.sites.models.Site`` or
         ``django.contrib.sites.models.RequestSite``
@@ -54,9 +54,9 @@ If you want to change the name of template, use following settings
 -   ``REGISTRATION_NOTIFICATION_EMAIL_TEMPLATE_NAME``
 -   ``REGISTRATION_NOTIFICATION_EMAIL_SUBJECT_TEMPLATE_NAME``
 
-    
+
 .. Note::
-    This feature is not available in tests because default tests of 
+    This feature is not available in tests because default tests of
     django-inspectional-registration are not assumed to test with contributes.
 
     If you do want this feature to be available in tests, set
@@ -121,6 +121,9 @@ def send_notification_email_reciver(sender, user, profile, request, **kwargs):
     message = render_to_string(
         settings.REGISTRATION_NOTIFICATION_EMAIL_TEMPLATE_NAME,
         context)
+    html_message = render_to_string(
+        settings.REGISTRATION_NOTIFICATION_HTML_EMAIL_TEMPLATE_NAME,
+        context)
 
     recipients = []
     if settings.REGISTRATION_NOTIFICATION_ADMINS:
@@ -146,5 +149,5 @@ def send_notification_email_reciver(sender, user, profile, request, **kwargs):
 
     mail_from = getattr(settings, 'REGISTRATION_FROM_EMAIL', '') or \
                     settings.DEFAULT_FROM_EMAIL
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipients)
+    send_mail(subject, message, html_message, settings.DEFAULT_FROM_EMAIL, recipients)
 user_registered.connect(send_notification_email_reciver)

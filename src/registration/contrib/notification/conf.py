@@ -15,6 +15,8 @@ class InspectionalRegistrationNotificationAppConf(AppConf):
 
     NOTIFICATION_EMAIL_TEMPLATE_NAME = (
             r'registration/notification_email.txt')
+    NOTIFICATION_HTML_EMAIL_TEMPLATE_NAME = (
+            r'registration/notification_email.html')
     NOTIFICATION_EMAIL_SUBJECT_TEMPLATE_NAME = (
             r'registration/notification_email_subject.txt')
 

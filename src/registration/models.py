@@ -122,7 +122,7 @@ class RegistrationManager(models.Manager):
         """accept account registration of ``profile``
 
         Accept account registration and email activation url to the ``User``,
-        returning accepted ``User``. 
+        returning accepted ``User``.
 
         By default, an acceptance email will be sent to the new user. To
         disable this, pass ``send_email=False``. An acceptance email will be
@@ -130,8 +130,8 @@ class RegistrationManager(models.Manager):
         ``registration/acceptance_email_subject.txt``.
 
         This method **DOES** works even after ``reject_registration`` has called
-        (this mean the account registration has rejected previously) because 
-        rejecting user by mistake may occur in this real world :-p If the account 
+        (this mean the account registration has rejected previously) because
+        rejecting user by mistake may occur in this real world :-p If the account
         registration has already accepted, returning will be ``None``
 
         The ``date_joined`` attribute of ``User`` updated to now in this
@@ -158,7 +158,7 @@ class RegistrationManager(models.Manager):
         """reject account registration of ``profile``
 
         Reject account registration and email rejection to the ``User``,
-        returning accepted ``User``. 
+        returning accepted ``User``.
 
         By default, an rejection email will be sent to the new user. To
         disable this, pass ``send_email=False``. An rejection email will be
@@ -167,7 +167,7 @@ class RegistrationManager(models.Manager):
 
         This method **DOES NOT** works after ``accept_registration`` has called
         (this mean the account registration has accepted previously).
-        If the account registration has already accepted/rejected, returning 
+        If the account registration has already accepted/rejected, returning
         will be ``None``
 
         """
@@ -187,8 +187,8 @@ class RegistrationManager(models.Manager):
                       send_email=True, message=None, no_profile_delete=False):
         """activate account with ``activation_key`` and ``password``
 
-        Activate account and email notification to the ``User``, returning 
-        activated ``User``, ``password`` and ``is_generated``. 
+        Activate account and email notification to the ``User``, returning
+        activated ``User``, ``password`` and ``is_generated``.
 
         By default, an activation email will be sent to the new user. To
         disable this, pass ``send_email=False``. An activation email will be
@@ -259,7 +259,7 @@ class RegistrationManager(models.Manager):
 
         It is recommended that this method be executed regularly as part of your
         routine site maintenance; this application provides a custom management
-        command which will call this method, accessible as 
+        command which will call this method, accessible as
         ``manage.py cleanupexpiredregistration`` (for just expired users) or
         ``manage.py cleanupregistration`` (for expired or rejected users).
 
@@ -278,8 +278,8 @@ class RegistrationManager(models.Manager):
             the username will become available for use again.
 
         If you have a troublesome ``User`` and wish to disable their account while
-        keeping it in the database, simply delete the associated 
-        ``RegistrationProfile``; an inactive ``User`` which does not have an 
+        keeping it in the database, simply delete the associated
+        ``RegistrationProfile``; an inactive ``User`` which does not have an
         associated ``RegistrationProfile`` will be deleted.
 
         """
@@ -309,7 +309,7 @@ class RegistrationManager(models.Manager):
 
         It is recommended that this method be executed regularly as part of your
         routine site maintenance; this application provides a custom management
-        command which will call this method, accessible as 
+        command which will call this method, accessible as
         ``manage.py cleanuprejectedregistration`` (for just rejected users) or
         ``manage.py cleanupregistration`` (for expired or rejected users).
 
@@ -328,8 +328,8 @@ class RegistrationManager(models.Manager):
             the username will become available for use again.
 
         If you have a troublesome ``User`` and wish to disable their account while
-        keeping it in the database, simply delete the associated 
-        ``RegistrationProfile``; an inactive ``User`` which does not have an 
+        keeping it in the database, simply delete the associated
+        ``RegistrationProfile``; an inactive ``User`` which does not have an
         associated ``RegistrationProfile`` will be deleted.
 
         """
@@ -461,7 +461,7 @@ class RegistrationProfile(models.Model):
             profiles are not treated yet or rejected by inspector.
 
         2.  Otherwise, the date the user signed up (which automatically updated
-            in registration acceptance) is incremented by the number of days 
+            in registration acceptance) is incremented by the number of days
             specified in the setting ``ACCOUNT_ACTIVATION_DAYS`` (which should
             be the number of days after acceptance during which a user is allowed
             to activate their account); if the result is less than or equal to
@@ -496,10 +496,12 @@ class RegistrationProfile(models.Model):
         subject = ''.join(subject.splitlines())
         message = render_to_string(
             'registration/%s_email.txt' % action, context)
+        html_message = render_to_string(
+            'registration/%s_email.html' % action, context)
 
         mail_from = getattr(settings, 'REGISTRATION_FROM_EMAIL', '') or \
                         settings.DEFAULT_FROM_EMAIL
-        send_mail(subject, message, mail_from, [self.user.email])
+        send_mail(subject, message, html_message, mail_from, [self.user.email])
 
     def send_registration_email(self, site):
         """send registration email to the user associated with this profile

@@ -27,7 +27,7 @@ def get_site(request):
 
 def generate_activation_key(username):
     """generate activation key with username
-    
+
     originally written by ubernostrum in django-registration_
 
     .. _django-registration: https://bitbucket.org/ubernostrum/django-registration
@@ -48,27 +48,12 @@ def generate_random_password(length=10):
     return password
 
 
-def send_mail(subject, message, from_email, recipients):
-    """send mail to recipients
-    
-    this method use django-mailer_ ``send_mail`` method when
-    the app is in ``INSTALLED_APPS``
-
-    .. Note::
-        django-mailer_ ``send_mail`` is not used duaring unittest
-        because it is a little bit difficult to check the number of
-        mail sent in unittest for both django-mailer and original
-        django ``send_mail``
-
-    .. _django-mailer: http://code.google.com/p/django-mailer/
-    """
-    from django.conf import settings
-    from django.core.mail import send_mail as django_send_mail
-    import sys
-    if 'test' not in sys.argv and 'mailer' in settings.INSTALLED_APPS:
-        try:
-            from mailer import send_mail
-            return send_mail(subject, message, from_email, recipients)
-        except ImportError:
-            pass
-    return django_send_mail(subject, message, from_email, recipients)
+from django.core.mail import EmailMultiAlternatives
+def send_mail(subject, message, html_message, from_email, recipients):
+    email = EmailMultiAlternatives(
+                subject=subject,
+                body=message,
+                to=recipients
+             )
+    email.attach_alternative(html_message, 'text/html')
+    return email.send()
